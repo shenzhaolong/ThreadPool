@@ -4,7 +4,8 @@
 
 #include "thread_assigner.h"
 
-ThreadTasks::ThreadTasks(std::function<void()> f, int l = 0): func(f), level(l){}
+ThreadTasks::ThreadTasks(std::function<void()> f, int l): func(f), level(l){}
+
 
 bool ThreadTasks::operator<(const ThreadTasks &tasks) const
 {
@@ -18,16 +19,19 @@ bool ThreadAssigner::put(ThreadTasks&& t)
     this->tasks.push(t);
 }
 
-bool ThreadAssigner::put(std::function<void()> func,int level = 0)
+
+bool ThreadAssigner::put(std::function<void()> func,int level)
 {
     return put(ThreadTasks{func,level});
 }
+
 
 bool ThreadAssigner::empty()
 {
     std::lock_guard<std::mutex> lgd(m);
     return this->tasks.size() == 0;
 }
+
 
 bool ThreadAssigner::pop(std::function<void()> &t)
 {

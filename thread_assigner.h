@@ -15,11 +15,12 @@ class ThreadTasks
 public:
     std::function<void()> func;          // 任务本身
 
-    ThreadTasks(std::function<void()> f, int l);
+    ThreadTasks(std::function<void()> f, int l = 0);
     ThreadTasks(const ThreadTasks& tasks) = default;
     ThreadTasks& operator=(const ThreadTasks& tasks) = default;
     ThreadTasks() = delete;
 
+    // 重载比较符号，优先队列能够比较ThreadTasks
     bool operator<(const ThreadTasks& tasks) const;
 
 private:
@@ -33,9 +34,14 @@ public:
     ThreadAssigner();
     ThreadAssigner(int ms);
 
-    bool put(std::function<void()> func,int level);
+    // 提交任务
+    bool put(std::function<void()> func,int level = 0);
     bool put(ThreadTasks&& t);
+
+    // 获取任务，成功返回true，否则返回false
     bool pop(std::function<void()> &t);
+
+    // 判空
     bool empty();
 
 private:

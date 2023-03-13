@@ -5,6 +5,7 @@
 #include <iostream>
 #include "thread_assigner.h"
 
+
 void assignerTest()
 {
     std::function<void()> func = []()->void{ std::cout<<"func..."<<std::endl;};

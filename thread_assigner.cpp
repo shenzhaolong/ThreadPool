@@ -43,9 +43,5 @@ bool ThreadAssigner::pop(std::function<void()> &t)
     return true;
 }
 
-void ThreadAssigner::clear() {
-        std::lock_guard<std::mutex> lgd(m);
-        tasks = std::priority_queue<ThreadTasks>();
-        maxsize=0;
-}
+
 

@@ -43,6 +43,9 @@ public:
 
     // 判空
     bool empty();
+    //清空
+    void clear();
+    
 
 private:
    std::priority_queue<ThreadTasks> tasks;

@@ -12,6 +12,8 @@ bool ThreadTasks::operator<(const ThreadTasks &tasks) const
     return this->level < tasks.level;
 }
 
+void ThreadAssigner::ThreadAssigner(int ms) :maxsize(ms) {}
+
 bool ThreadAssigner::put(ThreadTasks&& t)
 {
     std::lock_guard<std::mutex> lgd(m);

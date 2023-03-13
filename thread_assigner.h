@@ -31,8 +31,8 @@ private:
 class ThreadAssigner
 {
 public:
-    ThreadAssigner();
-    ThreadAssigner(int ms);
+    ThreadAssigner() = default;
+    ThreadAssigner(int ms = 128);
 
     // 提交任务
     bool put(std::function<void()> func,int level = 0);

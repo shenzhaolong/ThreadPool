@@ -3,9 +3,19 @@
 //
 
 #include <iostream>
+#include "thread_assigner.h"
+
+void assignerTest()
+{
+    std::function<void()> func = []()->void{ std::cout<<"func..."<<std::endl;};
+    ThreadTasks t(func);
+    t.func();
+}
+
 
 int main()
 {
     std::cout<<"Thread Pool"<<std::endl;
+    assignerTest();
     return 0;
 }

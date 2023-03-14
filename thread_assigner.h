@@ -38,7 +38,7 @@ public:
     bool put(std::function<void()> func,int level = 0);
     bool put(ThreadTasks&& t);
 
-    // 获取任务，成功返回true，否则返回false
+    // 获取任务并弹出，成功返回true，否则返回false
     bool pop(std::function<void()> &t);
 
     // 判空

@@ -40,6 +40,7 @@ bool ThreadAssigner::pop(std::function<void()> &t)
     std::lock_guard<std::mutex> lgd(m);
     if (this->tasks.size() == 0) return false;
     t = this->tasks.top().func;
+    this->tasks.pop();
     return true;
 }
 

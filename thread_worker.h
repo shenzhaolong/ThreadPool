@@ -15,7 +15,8 @@ class ThreadWorker
 {
 public:
     //接受引用作为参数
-    ThreadWorker(ThreadPool&pool);
+    explicit ThreadWorker(ThreadPool& pool,int id = 5);
+
     //重载运算符，线程中执行任务
     void operator()();
     

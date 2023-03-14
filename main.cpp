@@ -7,11 +7,9 @@
 #include "thread_pool.h"
 #include <random>
 
-void assignerTest()
+int assignerTest(int a,int b)
 {
-    std::function<void()> func = []()->void{ std::cout<<"func..."<<std::endl;};
-    ThreadTasks t(func);
-    t.func();
+    return a+b;
 }
 
 std::mutex cout_mutex;
@@ -36,8 +34,9 @@ void threadpoolTest()
     >dis(1,10);
     int level =dis(gen);
     ThreadPool pool(4);
-    for (int i = 1; i <= 10; i++) {
-        pool.enqueue([i](){ task(i); },level);
+    for (int i = 1; i <= 10; i++)
+    {
+        pool.submit([i](){ task(i); });
     }
     std::this_thread::sleep_for(std::chrono::seconds(5));
     
@@ -49,7 +48,10 @@ void threadpoolTest()
 int main()
 {
     std::cout<<"Thread Pool"<<std::endl;
-    assignerTest();
-    threadpoolTest();
+    // assignerTest();
+    // threadpoolTest();
+    ThreadPool pool(4);
+    auto k = pool.submit(assignerTest,1,2);
+    std::cout<<k.get() <<std::endl;
     return 0;
 }

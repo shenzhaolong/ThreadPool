@@ -6,11 +6,10 @@
 #include "thread_assigner.h"
 #include "thread_pool.h"
 #include <random>
+#include <time.h>
 
-int assignerTest(int a,int b)
-{
-    return a+b;
-}
+#define random(x) (rand()%x)
+
 
 std::mutex cout_mutex;
 
@@ -44,14 +43,44 @@ void threadpoolTest()
 
 }
 
+std::vector<int> arr(1000);
+
+int assignerTest(int a,int b)
+{
+    std::vector<int> c(arr);
+    for(int i=1;i<1000;i++)
+    {
+        int j=c[i];
+        for(int k = i-1; k >= 0; k--)
+        {
+            if(c[k]>=j) c[k+1]=c[k];
+        }
+    }
+    return 0;
+}
+
+
+void sortTest()
+{
+    for(int i=0;i<1000;i++) arr[i]=random(10000);
+    clock_t start = clock();
+    ThreadPool pool(1);
+    for(int i = 0; i < 10000 ;i++)
+    {
+        pool.submit(assignerTest,1,20000);
+    }
+    pool.allStop();
+    clock_t stop = clock();
+    double elapsed = (double) (stop - start) / CLOCKS_PER_SEC;
+    std::cout<<elapsed<<std::endl;
+}
 
 int main()
 {
     std::cout<<"Thread Pool"<<std::endl;
     // assignerTest();
     // threadpoolTest();
-    ThreadPool pool(4);
-    auto k = pool.submit(assignerTest,1,2);
-    std::cout<<k.get() <<std::endl;
+    sortTest();
+
     return 0;
 }

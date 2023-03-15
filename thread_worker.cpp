@@ -3,6 +3,7 @@
 //
 
 #include "thread_worker.h"
+#include <iostream>
 
 
 ThreadWorker::ThreadWorker(ThreadPool& pool, int id) :pool(pool), id(id){}
@@ -14,10 +15,20 @@ void ThreadWorker::operator()()
     {
         try
         {
-            std::unique_lock<std::mutex> lock(pool.mtx);
-            pool.cv.wait(lock, [this]{ return pool.stopped || !pool.assigner.empty(); });
-            if (pool.stopped && pool.assigner.empty()) return;
-            pool.assigner.pop(task);
+            // std::cout<<"id :"<<id<<" is run"<<std::endl;
+            auto t = pool.assigner.getcvbyid(id);
+            while(!pool.stopped && pool.assigner.empty(id))
+            {
+                {
+                    std::unique_lock<std::mutex> lock(*t.first);
+                    (*t.second).wait(lock);
+                }
+            }
+            if (pool.stopped && pool.assigner.empty(id))
+            {
+                return;
+            }
+            pool.assigner.pop(task,id);
             task();
         }
         catch (const std::exception& e)

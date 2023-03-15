@@ -10,6 +10,7 @@
 #include <condition_variable>
 #include "thread_assigner.h"
 
+
 class ThreadPool
 {
 public:
@@ -25,6 +26,8 @@ public:
         return submit(0, func , args...);
     }
 
+    void allStop();
+
     //添加任务到assigner，并通知有新任务到
     template<typename Func, typename... Args>
     auto submit(int level, Func&& func, Args&&... args)
@@ -38,9 +41,9 @@ public:
         // 再次包装函数以提供标准的类型函数给任务队列
         auto putTask = [packagedTask](){ (*packagedTask)();};
 
+        // 由put notify
         assigner.put(putTask);
 
-        cv.notify_one();
 
         return packagedTask->get_future();
     }
@@ -53,7 +56,7 @@ private:
     std::vector<std::thread> workers;//存储工作线程
     std::mutex mtx;//互斥锁，保护对assigner访问
     std::condition_variable cv;//条件变量，等待、通知新任务到来
-    bool stopped;//线程池本身是否停止
+    volatile bool stopped;//线程池本身是否停止
 };
 
 

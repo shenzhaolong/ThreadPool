@@ -1,32 +1,42 @@
 //create by zl
 
+#include <iostream>
 #include "thread_pool.h"
 #include "thread_worker.h"
-#include <iostream>
-ThreadPool::ThreadPool(int num_threads): assigner(128), stopped(false)
+
+
+ThreadPool::ThreadPool(int num_threads): assigner(num_threads)
 {
+    stopped = false;
     for (int i = 0; i < num_threads; ++i)
     {
-        workers.emplace_back(ThreadWorker(*this));
-        std::cout <<"success"<< i << std::endl;
+        workers.emplace_back(ThreadWorker(*this, i));
     }
 }
 
-ThreadPool::~ThreadPool()
+void ThreadPool::allStop()
 {
-    
-    std::cout<<"Stop is called, ThreadPool will end."<<std::endl;
-    {
-        std::unique_lock<std::mutex> lock(mtx);
-        stopped = true;
-    }
-    
-    cv.notify_all();
+    stopped = true;
+    this->assigner.stopAll();
     for (auto& worker : workers)
     {
         worker.join();
     }
 }
+
+
+ThreadPool::~ThreadPool()
+{
+
+//    stopped = true;
+//
+//    this->assigner.stopAll();
+//    for (auto& worker : workers)
+//    {
+//        worker.join();
+//    }
+}
+
 
 
 
